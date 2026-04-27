@@ -5,6 +5,7 @@ import LoginForm from "./components/auth/LoginForm";
 import SignUpForm from "./components/auth/SignUpForm";
 import Dashboard from "./components/pages/dashboard";
 import Success from "./components/pages/success";
+import Payment from "./components/pages/payment";
 import Home from "./components/pages/home";
 import { AuthProvider, useAuth } from "../supabase/auth";
 import { Toaster } from "./components/ui/sonner";
@@ -37,6 +38,12 @@ function AppRoutes() {
             <PrivateRoute>
               <Dashboard />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <Payment />
           }
         />
         <Route

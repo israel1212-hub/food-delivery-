@@ -2,57 +2,19 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "./CartContext";
+import { useNavigate } from "react-router-dom";
 
 interface CartScreenProps {
   onBack: () => void;
 }
 
 export default function CartScreen({ onBack }: CartScreenProps) {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
-  const [ordered, setOrdered] = React.useState(false);
+  const { items, updateQuantity, removeItem, totalPrice } = useCart();
+  const navigate = useNavigate();
 
   const handleOrder = () => {
-    setOrdered(true);
-    setTimeout(() => {
-      clearCart();
-      setOrdered(false);
-      onBack();
-    }, 3000);
+    navigate("/payment");
   };
-
-  if (ordered) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="min-h-screen bg-[#1A1A18] flex flex-col items-center justify-center px-6 text-center"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.2, 1] }}
-          transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
-          className="text-7xl mb-6"
-        >
-          🎉
-        </motion.div>
-        <h2
-          className="text-4xl font-black uppercase text-[#F5F0E8] mb-3"
-          style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-        >
-          Order Confirmed!
-        </h2>
-        <p className="text-[#F5F0E8]/60 mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-          Your order is on its way 🚀
-        </p>
-        <div
-          className="mt-4 px-5 py-2 border-2 border-[#FF4D1C] text-[#FF4D1C] font-bold uppercase text-sm"
-          style={{ fontFamily: "Outfit, sans-serif" }}
-        >
-          Estimated arrival: ~25 min
-        </div>
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div
@@ -76,15 +38,9 @@ export default function CartScreen({ onBack }: CartScreenProps) {
         >
           Your Cart
         </h1>
-        {items.length > 0 && (
-          <span
-            className="ml-auto text-xs text-[#F5F0E8]/50 cursor-pointer hover:text-[#FF4D1C] transition-colors"
-            onClick={() => clearCart()}
-            style={{ fontFamily: "Outfit, sans-serif" }}
-          >
-            Clear all
-          </span>
-        )}
+        <span className="ml-auto text-xs text-[#F5F0E8]/50" style={{ fontFamily: "Outfit, sans-serif" }}>
+          {items.length} {items.length === 1 ? "item" : "items"}
+        </span>
       </div>
 
       {/* Items */}
