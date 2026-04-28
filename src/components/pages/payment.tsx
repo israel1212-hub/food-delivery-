@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, CreditCard, Smartphone, CheckCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "@/components/feast/CartContext";
+import { CartProvider } from "@/components/feast/CartContext";
 
 interface PaymentMethod {
   id: string;
@@ -18,8 +20,9 @@ const paymentMethods: PaymentMethod[] = [
   { id: "card", name: "Credit/Debit Card", icon: "💳", color: "#4A5568" },
 ];
 
-export default function Payment() {
+function PaymentContent() {
   const navigate = useNavigate();
+  const { totalPrice, totalItems, clearCart } = useCart();
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [processing, setProcessing] = useState(false);
@@ -28,15 +31,15 @@ export default function Payment() {
     if (!selectedMethod || (selectedMethod !== "card" && !phoneNumber)) {
       return;
     }
-
     setProcessing(true);
-    
-    // Simulate payment processing
     setTimeout(() => {
       setProcessing(false);
+      clearCart();
       navigate("/success");
     }, 2500);
   };
+
+  const canPay = !!selectedMethod && (selectedMethod === "card" || !!phoneNumber) && !processing;
 
   return (
     <motion.div
@@ -47,6 +50,8 @@ export default function Payment() {
       {/* Header */}
       <div className="flex items-center gap-4 px-4 py-4 border-b-2 border-[#F5F0E8]/10">
         <button
+          type="button"
+          aria-label="Go back"
           onClick={() => navigate(-1)}
           className="w-9 h-9 flex items-center justify-center border-2 border-[#F5F0E8]/20 text-[#F5F0E8] hover:border-[#FF4D1C] hover:text-[#FF4D1C] transition-colors"
         >
@@ -74,6 +79,7 @@ export default function Payment() {
           {paymentMethods.map((method) => (
             <motion.button
               key={method.id}
+              type="button"
               onClick={() => setSelectedMethod(method.id)}
               whileTap={{ scale: 0.98 }}
               className={`w-full flex items-center gap-4 p-4 border-2 transition-all ${
@@ -207,22 +213,40 @@ export default function Payment() {
         </AnimatePresence>
       </div>
 
-      {/* Payment Button */}
+      {/* Order Summary + Payment Button */}
       <div className="px-4 pb-6 pt-4 border-t-2 border-[#F5F0E8]/10">
+        {totalItems > 0 && (
+          <div className="mb-4 space-y-2">
+            <div className="flex justify-between text-sm text-[#F5F0E8]/60" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <span>Items ({totalItems})</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-sm text-[#F5F0E8]/60" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <span>Delivery Fee</span>
+              <span className="text-[#FFD600] font-bold">FREE</span>
+            </div>
+            <div
+              className="flex justify-between font-black text-[#F5F0E8] text-lg border-t-2 border-[#F5F0E8]/10 pt-2"
+              style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+            >
+              <span>Total</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+          </div>
+        )}
+
         <motion.button
+          type="button"
           onClick={handlePayment}
-          disabled={!selectedMethod || (selectedMethod !== "card" && !phoneNumber) || processing}
-          whileTap={{ scale: selectedMethod ? 0.98 : 1 }}
+          disabled={!canPay}
+          whileTap={{ scale: canPay ? 0.98 : 1 }}
           className={`w-full flex items-center justify-center gap-3 px-5 py-4 border-2 font-black uppercase transition-all ${
-            !selectedMethod || (selectedMethod !== "card" && !phoneNumber) || processing
+            !canPay
               ? "border-[#F5F0E8]/20 bg-[#F5F0E8]/10 text-[#F5F0E8]/30 cursor-not-allowed"
               : "border-[#1A1A18] bg-[#FF4D1C] text-[#F5F0E8] hover:bg-[#FF4D1C]/90"
           }`}
           style={{
-            boxShadow:
-              selectedMethod && !processing
-                ? "4px 4px 0px rgba(245,240,232,0.2)"
-                : "none",
+            boxShadow: canPay ? "4px 4px 0px rgba(245,240,232,0.2)" : "none",
             fontFamily: "Bricolage Grotesque, sans-serif",
           }}
         >
@@ -232,10 +256,20 @@ export default function Payment() {
               <span>Processing Payment...</span>
             </>
           ) : (
-            <span>Complete Payment</span>
+            <span>
+              Complete Payment{totalPrice > 0 ? " · $" + totalPrice.toFixed(2) : ""}
+            </span>
           )}
         </motion.button>
       </div>
     </motion.div>
+  );
+}
+
+export default function Payment() {
+  return (
+    <CartProvider>
+      <PaymentContent />
+    </CartProvider>
   );
 }

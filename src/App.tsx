@@ -25,6 +25,10 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function TempoRoutes() {
+  return useRoutes(routes);
+}
+
 function AppRoutes() {
   return (
     <>
@@ -40,20 +44,10 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/payment"
-          element={
-            <Payment />
-          }
-        />
-        <Route
-          path="/success"
-          element={
-            <Success />
-          }
-        />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/success" element={<Success />} />
       </Routes>
-      {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
+      {import.meta.env.VITE_TEMPO === "true" && <TempoRoutes />}
     </>
   );
 }

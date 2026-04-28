@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, Star, Clock, ShoppingBag } from "lucide-react";
 import { Dish } from "./types";
 import { useCart } from "./CartContext";
+import { toast } from "sonner";
 
 interface DishModalProps {
   dish: Dish | null;
@@ -27,6 +28,10 @@ export default function DishModal({ dish, onClose }: DishModalProps) {
   const handleAdd = () => {
     if (!dish) return;
     addItem(dish, quantity, selectedSize, selectedExtras);
+    toast.success(`${dish.name} added to cart`, {
+      duration: 1800,
+      position: "bottom-center",
+    });
     onClose();
   };
 
@@ -54,6 +59,8 @@ export default function DishModal({ dish, onClose }: DishModalProps) {
           >
             {/* Close button */}
             <button
+              type="button"
+              aria-label="Close"
               onClick={onClose}
               className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center border-2 border-[#1A1A18] bg-[#1A1A18] text-[#F5F0E8] z-10 hover:bg-[#FF4D1C] transition-colors"
             >
@@ -164,6 +171,8 @@ export default function DishModal({ dish, onClose }: DishModalProps) {
                 {/* Qty controls */}
                 <div className="flex items-center border-2 border-[#1A1A18]" style={{ boxShadow: "2px 2px 0px #1A1A18" }}>
                   <button
+                    type="button"
+                    aria-label="Decrease quantity"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     className="w-10 h-10 flex items-center justify-center hover:bg-[#1A1A18]/10 transition-colors"
                   >
@@ -176,6 +185,8 @@ export default function DishModal({ dish, onClose }: DishModalProps) {
                     {quantity}
                   </span>
                   <button
+                    type="button"
+                    aria-label="Increase quantity"
                     onClick={() => setQuantity((q) => q + 1)}
                     className="w-10 h-10 flex items-center justify-center hover:bg-[#1A1A18]/10 transition-colors"
                   >

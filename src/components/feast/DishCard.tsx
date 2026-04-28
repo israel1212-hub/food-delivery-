@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Star, Clock, Plus } from "lucide-react";
 import { Dish } from "./types";
 import { useCart } from "./CartContext";
+import { toast } from "sonner";
 
 interface DishCardProps {
   dish: Dish;
@@ -19,6 +20,10 @@ export default function DishCard({ dish, index, onTap }: DishCardProps) {
     addItem(dish);
     setPopped(true);
     setTimeout(() => setPopped(false), 400);
+    toast.success(`${dish.name} added to cart`, {
+      duration: 1800,
+      position: "bottom-center",
+    });
   };
 
   return (

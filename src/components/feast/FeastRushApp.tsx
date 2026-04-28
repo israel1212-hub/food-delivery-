@@ -17,11 +17,21 @@ function FeastRushContent() {
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
   const [showCart, setShowCart] = useState(false);
   const [location, setLocation] = useState("123 Main Street, New York, NY");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredDishes = useMemo(() => {
-    if (activeCategory === "all") return dishes;
-    return dishes.filter((d) => d.category === activeCategory);
-  }, [activeCategory]);
+    let result = activeCategory === "all" ? dishes : dishes.filter((d) => d.category === activeCategory);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (d) =>
+          d.name.toLowerCase().includes(q) ||
+          d.restaurant.toLowerCase().includes(q) ||
+          d.description.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [activeCategory, searchQuery]);
 
   return (
     <div
@@ -40,19 +50,23 @@ function FeastRushContent() {
         location={location}
         onLocationChange={setLocation}
         onCartClick={() => setShowCart(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       {/* Main scrollable content */}
       <main className="pb-28">
-        {/* Hero Banner - fades in first */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="pt-4"
-        >
-          <HeroBanner />
-        </motion.div>
+        {/* Hero Banner - only show when not searching */}
+        {!searchQuery && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="pt-4"
+          >
+            <HeroBanner />
+          </motion.div>
+        )}
 
         {/* Category pills */}
         <motion.div

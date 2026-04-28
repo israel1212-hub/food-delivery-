@@ -82,12 +82,16 @@ export default function HeroBanner() {
 
       {/* Navigation arrows */}
       <button
+        type="button"
+        aria-label="Previous banner"
         onClick={() => goTo(current - 1)}
         className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[#1A1A18]/60 hover:bg-[#1A1A18] border border-[#F5F0E8]/30 text-[#F5F0E8] transition-colors rounded-sm z-10"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
       <button
+        type="button"
+        aria-label="Next banner"
         onClick={() => goTo(current + 1)}
         className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[#1A1A18]/60 hover:bg-[#1A1A18] border border-[#F5F0E8]/30 text-[#F5F0E8] transition-colors rounded-sm z-10"
       >
@@ -99,6 +103,8 @@ export default function HeroBanner() {
         {heroBanners.map((_, i) => (
           <button
             key={i}
+            type="button"
+            aria-label={`Go to banner ${i + 1}`}
             onClick={() => goTo(i)}
             className="h-1.5 rounded-full transition-all duration-300"
             style={{
