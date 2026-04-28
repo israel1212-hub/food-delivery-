@@ -52,7 +52,7 @@ export const dishes: Dish[] = [
     rating: 4.7,
     deliveryTime: "30 min",
     image:
-      "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80",
+      "https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80",
     category: "sushi",
     description:
       "Shrimp tempura, cucumber, avocado, topped with sliced avocado and unagi sauce.",
@@ -186,7 +186,7 @@ export const restaurants: Restaurant[] = [
   {
     id: "r3",
     name: "Sakura Sushi",
-    logo: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=100&q=80",
+    logo: "https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=100&q=80",
     cuisine: "Japanese Sushi",
     deliveryTime: "25–35 min",
     rating: 4.7,
